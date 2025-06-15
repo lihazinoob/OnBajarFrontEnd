@@ -9,6 +9,10 @@ import { LuHeart } from "react-icons/lu";
 import { MdOutlineShoppingCart } from "react-icons/md";
 import { FaArrowTurnDown } from "react-icons/fa6";
 
+import { RiShoppingBasketFill } from "react-icons/ri";
+
+import DropDownMenu from "./DropDownMenu";
+
 export default function TopBar() {
   //state for tracking when hovering over the shop menu item, the dropdown is open or not
   const [isShopHovered, setIsShopHovered] = React.useState<boolean>(false);
@@ -26,7 +30,7 @@ export default function TopBar() {
             <div className="text-xl font-bold">On Bazar</div>
           </Link>
 
-          {/* Menu Items */}
+          {/* Menu Items which will be visible above md breakpoint */}
           <nav className="hidden md:flex gap-2 font-medium items-center">
             {/* Shop Menu */}
             <div
@@ -44,42 +48,7 @@ export default function TopBar() {
                 <FaArrowTurnDown className="mt-1" />
               </div>
               {/* Dropdown Menu */}
-              {isShopHovered && (
-                <div className="absolute top-8 left-0 mt-2 w-30 bg-gray-50 border border-gray-200 rounded-md shadow-lg z-30 px-4 py-2">
-                  <div className="flex flex-col items-center justify-center space-y-2 text-gray-500">
-                    <Link
-                      href="/category/jersey"
-                      className="hover:text-gray-700 transition-colors duration-200"
-                    >
-                      Jersey
-                    </Link>
-                    <Link
-                      href="/category/t-shirt"
-                      className="hover:text-gray-700 transition-colors duration-200"
-                    >
-                      T-shirt
-                    </Link>
-                    <Link
-                      href="/category/trousers"
-                      className="hover:text-gray-700 transition-colors duration-200"
-                    >
-                      Trousers
-                    </Link>
-                    <Link
-                      href="/category/shirt"
-                      className="hover:text-gray-700 transition-colors duration-200"
-                    >
-                      Shirt
-                    </Link>
-                    <Link
-                      href="/category/shorts"
-                      className="hover:text-gray-700 transition-colors duration-200"
-                    >
-                      Shorts
-                    </Link>
-                  </div>
-                </div>
-              )}
+              {isShopHovered && <DropDownMenu />}
             </div>
             <div>
               <Link
@@ -118,15 +87,42 @@ export default function TopBar() {
           {/* Icons */}
           <div className="flex items-center space-x-6 cursor-pointer">
             <LuSearch size={30} />
-            <LuHeart size={30} />
+            <LuHeart size={30} className="hidden md:block" />
             <Link href="/cart" className="flex items-center gap-1">
               <MdOutlineShoppingCart size={30} />
               {/* Cart Item Count */}
-              <span className="text-base font-medium">৳ 0.00</span>
+              <span className="text-base font-medium hidden md:block">
+                ৳ 0.00
+              </span>
             </Link>
           </div>
         </div>
       </header>
+
+      {/* Bottom Navigation Bar */}
+      <nav className="md:hidden  fixed px-12  bottom-0 left-0 right-0 bg-white border-t shadow-sm z-20">
+        <div className="flex items-center justify-between cursor-pointer ">
+          <div className="flex flex-col items-center justify-center py-2 gap-y-1 hover:text-gray-700 transition-colors duration-200 ease-in-out ">
+            <RiShoppingBasketFill size={30}/>
+            <div className="font-semibold tracking-wider">
+              Shop
+            </div>
+          </div>
+          <div className="flex flex-col items-center justify-center py-2 gap-y-1 hover:text-gray-700 transition-colors duration-200 ease-in-out">
+            <LuHeart size={30}/>
+            <div className="font-semibold tracking-wider">
+              WishList
+            </div>
+          </div>
+          <div className="flex flex-col items-center justify-center py-2 gap-y-1 hover:text-gray-700 transition-colors duration-200 ease-in-out">
+            <MdOutlineShoppingCart size={30}/>
+            <div className="font-semibold tracking-wider">
+              Cart
+            </div>
+          </div>
+
+        </div>
+      </nav>
     </>
   );
 }
