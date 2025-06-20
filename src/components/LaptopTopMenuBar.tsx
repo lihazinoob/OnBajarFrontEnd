@@ -10,16 +10,34 @@ export default function LaptopTopMenuBar() {
 
   return (
     <>
-      <div className="font-lufga w-full shadow-lg "
-      onMouseLeave={()=>setIsShopHovered(false)}>
+      <div
+        className="font-lufga w-full shadow-lg "
+        onMouseLeave={() => setIsShopHovered(false)}
+      >
         <div className=" flex items-center justify-between px-12 xl:px-20 shadow-lg py-6  ">
           <div className="text-3xl font-bold cursor-pointer">ON-BAZAR</div>
           <div className="flex gap-8 xl:gap-12 tracking-tight text-lg xl:text-xl cursor-pointer">
-            <div className="">
-              <div onMouseEnter={() => setIsShopHovered(true)}>Shop</div>
+            <div className="relative group cursor-pointer">
+              <div
+                onMouseEnter={() => setIsShopHovered(true)}
+                className="pb-2 group-hover:border-b-2 group-hover:border-yellow-500 transition-all duration-200"
+              >
+                Shop
+              </div>
             </div>
-            <div onMouseEnter={()=>setIsShopHovered(false)}>New Arrivals</div>
-            <div>BestSellers</div>
+            <div className="relative group cursor-pointer">
+              <div
+                onMouseEnter={() => setIsShopHovered(false)}
+                className="pb-2 group-hover:border-b-2 group-hover:border-yellow-500 transition-all duration-200"
+              >
+                New Arrivals
+              </div>
+            </div>
+            <div className="relative group cursor-pointer">
+              <div className="pb-2 group-hover:border-b-2 group-hover:border-yellow-500 transition-all duration-200">
+                BestSellers
+              </div>
+            </div>
             <div>Sale</div>
           </div>
           <div className="flex gap-4 items-center xl:gap-8">
