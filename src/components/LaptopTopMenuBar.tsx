@@ -11,7 +11,7 @@ export default function LaptopTopMenuBar() {
   return (
     <>
       <div
-        className="font-lufga w-full shadow-lg "
+        className="font-lufga w-full shadow-md "
         onMouseLeave={() => setIsShopHovered(false)}
       >
         <div className=" flex items-center justify-between px-12 xl:px-20 shadow-lg py-6  ">
