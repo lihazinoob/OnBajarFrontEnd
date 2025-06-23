@@ -1,18 +1,34 @@
-import React from "react";
+"use client";
+
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
+
+import fetchBannerImage from "@/services/fetchBannerImage";
+
 const page = () => {
+  // state for setting the image URL
+  const [imageURL, setImageURL] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetchBannerImage().then(setImageURL);
+  }, []);
+
   return (
     <div className="font-lufga">
       {/* Image Container */}
       <div className="px-4 w-full mt-5">
         <div className="w-full h-[544px] md:h-[983px] lg:h-[800px] xl:h-[701px] relative ">
-          <Image
-            src={"/images/run.jpg"}
-            alt="samplerun"
-            fill
-            className="object-cover rounded-xl"
-          />
-          <div className="absolute inset-0 bg-black/20"></div>
+          {imageURL && (
+            <>
+              <Image
+                src={imageURL}
+                alt="samplerun"
+                fill
+                className="object-cover rounded-xl"
+              />
+              <div className="absolute inset-0 bg-black/20"></div>
+            </>
+          )}
 
           {/* Overlay Content */}
           <div className="absolute inset-0 flex flex-col items-center justify-center xl:items-start xl:pl-32  text-white z-10">
