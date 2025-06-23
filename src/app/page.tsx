@@ -1,17 +1,19 @@
-"use client";
+// "use client";
 
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 
 import fetchBannerImage from "@/services/fetchBannerImage";
 
-const page = () => {
+const  page = async() => {
   // state for setting the image URL
-  const [imageURL, setImageURL] = useState<string | null>(null);
+  // const [imageURL, setImageURL] = useState<string | null>(null);
 
-  useEffect(() => {
-    fetchBannerImage().then(setImageURL);
-  }, []);
+  // useEffect(() => {
+  //   fetchBannerImage().then(setImageURL);
+  // }, []);
+  const imageURL = await fetchBannerImage();
+
 
   return (
     <div className="font-lufga">

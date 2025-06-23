@@ -1,7 +1,11 @@
 export default async function fetchBannerImage()
 {
   // fetching the image URL from the backend
-  const response = await fetch("http://localhost:3000/api/fetchBannerImage");
+  const response = await fetch("http://localhost:3000/api/fetchBannerImage",{
+    next:{
+      revalidate:86400
+    }
+  });
   // converting the response in usable json format
   const result = await response.json();
 
