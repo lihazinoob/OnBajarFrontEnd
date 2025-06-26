@@ -3,7 +3,7 @@ export default async function fetchBannerImage()
   // fetching the image URL from the backend
   const response = await fetch("https://raw-node-js.onrender.com/api/fetchBannerImage",{
     next:{
-      revalidate:86400
+      revalidate:30
     }
   });
   // converting the response in usable json format
