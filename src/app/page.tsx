@@ -6,12 +6,7 @@ import Image from "next/image";
 import fetchBannerImage from "@/services/fetchBannerImage";
 
 const  page = async() => {
-  // state for setting the image URL
-  // const [imageURL, setImageURL] = useState<string | null>(null);
 
-  // useEffect(() => {
-  //   fetchBannerImage().then(setImageURL);
-  // }, []);
   const imageURL = await fetchBannerImage();
 
 

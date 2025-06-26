@@ -1,7 +1,7 @@
 export default async function fetchBannerImage()
 {
   // fetching the image URL from the backend
-  const response = await fetch("http://localhost:3000/api/fetchBannerImage",{
+  const response = await fetch("https://raw-node-js.onrender.com/api/fetchBannerImage",{
     next:{
       revalidate:86400
     }
