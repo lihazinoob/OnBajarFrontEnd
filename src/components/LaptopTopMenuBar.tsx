@@ -41,11 +41,11 @@ export default function LaptopTopMenuBar() {
                 <button className="hover:opacity-50 cursor-pointer">
                   Shop
                 </button>
-                <div className="absolute top-0 -left-[32rem] transition group-hover:translate-y-5 translate-y-0 opacity-0 invisible group-hover:opacity-100 group-hover:visible duration-500 ease-in-out group-hover:transform z-50 lg:min-w-[1440px] transform">
+                <div className="absolute top-0 -left-[30rem] transition group-hover:translate-y-5 translate-y-0 opacity-0 invisible group-hover:opacity-100 group-hover:visible duration-500 ease-in-out group-hover:transform z-50 lg:min-w-[1340px] transform">
                   <div className="relative top-6 p-6 bg-white rounded-xl shadow-xl w-full">
-                    <div className="w-10 h-10 bg-white transform rotate-45 absolute top-0 z-0 translate-x-0 transition-transform group-hover:translate-x-[31rem] duration-500 ease-in-out rounded-sm"></div>
+                    
                     <div className="relative z-10">
-                      <div className=" py-8 grid grid-cols-2 lg:grid-cols-5 lg:gap-2 xl:gap-24 lg:pl-8 xl:pl-0">
+                      <div className="py-8 grid grid-cols-2 lg:grid-cols-4 lg:gap-8 mx-auto lg:ml-12">
                         {categories.map((category: Category) => (
                           <div key={category.id}>
                             {/* Image container */}

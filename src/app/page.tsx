@@ -5,15 +5,13 @@ import Image from "next/image";
 
 import fetchBannerImage from "@/services/fetchBannerImage";
 
-const  page = async() => {
-
+const page = async () => {
   const imageURL = await fetchBannerImage();
-
 
   return (
     <div className="font-lufga">
-      {/* Image Container */}
-      <div className="px-4 w-full mt-5">
+      <div className="px-4 w-full mt-4">
+        {/* Image Container */}
         <div className="w-full h-[544px] md:h-[983px] lg:h-[800px] xl:h-[701px] relative ">
           {imageURL && (
             <>
@@ -48,6 +46,7 @@ const  page = async() => {
             </div>
           </div>
         </div>
+        
       </div>
     </div>
   );

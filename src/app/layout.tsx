@@ -4,6 +4,7 @@ import "./globals.css";
 
 import TopBar from "@/components/TopBar";
 import { lufga } from "@/utils/fonts";
+import BreadCrumbs from "@/components/BreadCrumbs";
 
 
 export const metadata: Metadata = {
@@ -20,6 +21,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={lufga.variable}>
         <TopBar />
+        <BreadCrumbs/>
         {children}
       </body>
     </html>
