@@ -1,9 +1,8 @@
-// "use client";
-
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 
 import fetchBannerImage from "@/services/fetchBannerImage";
+import FeaturedProducts from "@/components/FeaturedProducts";
 
 const page = async () => {
   const imageURL = await fetchBannerImage();
@@ -46,8 +45,9 @@ const page = async () => {
             </div>
           </div>
         </div>
-        
       </div>
+      {/* Featured Products Section */}
+      <FeaturedProducts/>
     </div>
   );
 };
