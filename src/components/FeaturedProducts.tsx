@@ -12,7 +12,7 @@ export default function FeaturedProducts() {
         </div>
         {/* Section for showing the featured products */}
 
-        <div className="mt-4 lg:mt-12 pb-12">
+        <div className="mt-4 lg:mt-12">
           <div className="flex lg:grid lg:grid-cols-5 gap-4 md:gap-8 lg:gap-6 overflow-x-auto scroll-smooth scrollbar-hide">
             {[
               {
@@ -43,8 +43,9 @@ export default function FeaturedProducts() {
             ].map((products) => (
               <div
                 key={products.id}
-                className="min-w-[60%] sm:min-w-[50%] md:min-w-[38%] lg:min-w-0 xl:min-w-0 relative  h-80 md:h-96 lg:h-[28rem]  rounded-xl overflow-hidden shadow-lg"
+                className="cursor-pointer min-w-[60%] sm:min-w-[50%] md:min-w-[38%] lg:min-w-0 xl:min-w-0 relative  h-80 md:h-96 lg:h-[28rem]  rounded-xl overflow-hidden shadow-lg group "
               >
+                <div className="absolute left-0 top-0 w-1 h-0 bg-slate-100 transition-all duration-500 group-hover:h-full z-20" />
                 <img
                   src={products.image}
                   alt={products.title}

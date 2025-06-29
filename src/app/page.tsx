@@ -3,6 +3,7 @@ import Image from "next/image";
 
 import fetchBannerImage from "@/services/fetchBannerImage";
 import FeaturedProducts from "@/components/FeaturedProducts";
+import ProductList from "@/components/ProductList";
 
 const page = async () => {
   const imageURL = await fetchBannerImage();
@@ -47,7 +48,25 @@ const page = async () => {
         </div>
       </div>
       {/* Featured Products Section */}
-      <FeaturedProducts/>
+      <FeaturedProducts />
+
+      {/* Big Headline */}
+      <div className="w-full px-4 lg:px-16 mt-20 lg:mt-32">
+        <div className="text-center xl:text-left">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-8xl font-light leading-tight tracking-tight">
+            <span className="block text-gray-400">
+              IT’S YOUR DAY, YOUR CHOICE
+            </span>
+            <span className="block text-black font-extrabold">
+              DRESS FOR YOU,
+            </span>
+            <span className="block text-gray-400">DRESS YOUR WAY.</span>
+          </h2>
+        </div>
+      </div>
+
+      {/* The Product List Goes here */}
+      <ProductList />
     </div>
   );
 };

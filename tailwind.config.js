@@ -14,6 +14,7 @@ module.exports = {
         lufga: ["var(--font-lufga)", "sans-serif"],
       },
     },
+    
   },
   plugins: [],
 };
