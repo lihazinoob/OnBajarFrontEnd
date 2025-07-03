@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Image from "next/image";
 
 import fetchBannerImage from "@/services/fetchBannerImage";
@@ -7,6 +7,18 @@ import ProductList from "@/components/ProductList";
 
 const page = async () => {
   const imageURL = await fetchBannerImage();
+  const response = await fetch("http://localhost:3000/api/fetchAllProducts", {
+    cache: "no-store",
+  });
+  if (!response.ok) {
+    throw new Error("Failed to fetch products");
+  }
+  const data = await response.json();
+  const productData = data.products.map((product: any) => ({
+    ...product,
+    product_name:JSON.parse(product.product_name)[0],
+    product_description: JSON.parse(product.product_description)[0]
+  }));
 
   return (
     <div className="font-lufga">
@@ -66,7 +78,7 @@ const page = async () => {
       </div>
 
       {/* The Product List Goes here */}
-      <ProductList />
+      <ProductList products = {productData} />
     </div>
   );
 };
