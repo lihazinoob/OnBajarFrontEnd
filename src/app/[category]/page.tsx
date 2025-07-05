@@ -23,7 +23,9 @@ interface Product {
 
 export default function CategoryPage() {
   const params = useParams();
-  const slug = params?.category||"";
+  const rawSlug = params?.category;
+  const slug = Array.isArray(rawSlug) ? rawSlug[0] : rawSlug ?? "";
+
   const [prouducts, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -85,7 +87,7 @@ export default function CategoryPage() {
           </div>
 
           {/* Filter DropDown Menu */}
-          {open && <FilterDropDown priceRanges = {priceRanges} />}
+          {open && <FilterDropDown priceRanges={priceRanges} />}
 
           {error && <p className="text-red-500">{error}</p>}
           {!loading && !error && <ProductList products={prouducts} />}
