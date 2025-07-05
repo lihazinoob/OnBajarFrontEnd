@@ -4,7 +4,7 @@ import ProductList from "@/components/ProductList";
 import React, { useEffect, useState } from "react";
 import { FaFilter } from "react-icons/fa";
 import dynamicPriceRangeCalculator from "@/services/dynamicPriceRangeCalculator";
-
+import { useParams } from "next/navigation";
 interface Product {
   id: number;
   created_at: string;
@@ -21,12 +21,9 @@ interface Product {
   product_image: string;
 }
 
-export default function CategoryPage({
-  params,
-}: {
-  params: { category: string };
-}) {
-  const slug = params.category;
+export default function CategoryPage() {
+  const params = useParams();
+  const slug = params?.category||"";
   const [prouducts, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
