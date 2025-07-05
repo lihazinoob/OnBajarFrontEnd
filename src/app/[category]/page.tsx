@@ -1,32 +1,71 @@
-
+"use client";
 import FilterDropDown from "@/components/FilterDropDown";
 import ProductList from "@/components/ProductList";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { FaFilter } from "react-icons/fa";
+import dynamicPriceRangeCalculator from "@/services/dynamicPriceRangeCalculator";
 
-export default async function CategoryPage({
+interface Product {
+  id: number;
+  created_at: string;
+  product_name: string; // Parsed from JSON string
+  product_description: string; // Parsed from JSON string
+  product_price: number;
+  product_sale_percentage: number;
+  is_featured_product: boolean;
+  is_new_product: boolean;
+  product_quantity: number;
+  product_colors: string[]; // Array of hex color strings
+  product_category_id: number;
+  is_sold_out: boolean;
+  product_image: string;
+}
+
+export default function CategoryPage({
   params,
 }: {
   params: { category: string };
 }) {
   const slug = params.category;
-  console.log("slug is ", slug);
-  const response = await fetch(
-    `http://localhost:3000/api/fetchProductsByCategory/${slug}`,
-    {
-      cache: "no-store",
-    }
-  );
-  if (!response.ok) {
-    throw new Error("Failed to fetch products");
-  }
-  const data = await response.json();
-  const productData = data.products.map((product: any) => ({
-    ...product,
-    product_name: JSON.parse(product.product_name)[0],
-    product_description: JSON.parse(product.product_description)[0],
-  }));
+  const [prouducts, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [open, setOpen] = useState(false);
+  // an array to put all the product prices
 
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const response = await fetch(
+          `https://raw-node-js.onrender.com/api/fetchProductsByCategory/${slug}`,
+          {
+            cache: "no-store",
+          }
+        );
+        if (!response.ok) {
+          throw new Error("Failed to fetch products");
+        }
+
+        const data = await response.json();
+        const productData = data.products.map((product: any) => ({
+          ...product,
+          product_name: JSON.parse(product.product_name)[0],
+          product_description: JSON.parse(product.product_description)[0],
+        }));
+
+        setProducts(productData);
+      } catch (err: any) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchData();
+  }, [slug]);
+
+  const allProductPrice = prouducts.map((p) => p.product_price);
+  const priceRanges = dynamicPriceRangeCalculator(allProductPrice);
+  // console.log(priceRanges);
 
   return (
     <>
@@ -38,7 +77,10 @@ export default async function CategoryPage({
               PRODUCTS
             </div>
             <div className="">
-              <button className="flex justify-start items-center lg:gap-2 gap-1 cursor-pointer">
+              <button
+                className="flex justify-start items-center lg:gap-2 gap-1 cursor-pointer"
+                onClick={() => setOpen(!open)}
+              >
                 <FaFilter size={20} />{" "}
                 <span className="text-sm lg:text-xl">Filter</span>
               </button>
@@ -46,9 +88,10 @@ export default async function CategoryPage({
           </div>
 
           {/* Filter DropDown Menu */}
-          
+          {open && <FilterDropDown priceRanges = {priceRanges} />}
 
-          <ProductList products={productData} />
+          {error && <p className="text-red-500">{error}</p>}
+          {!loading && !error && <ProductList products={prouducts} />}
         </div>
       </div>
     </>

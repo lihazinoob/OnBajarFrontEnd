@@ -7,7 +7,7 @@ import ProductList from "@/components/ProductList";
 
 const page = async () => {
   const imageURL = await fetchBannerImage();
-  const response = await fetch("http://localhost:3000/api/fetchAllProducts", {
+  const response = await fetch("https://raw-node-js.onrender.com/api/fetchAllProducts", {
     cache: "no-store",
   });
   if (!response.ok) {
