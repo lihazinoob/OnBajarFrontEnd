@@ -16,8 +16,8 @@ const page = async () => {
   const data = await response.json();
   const productData = data.products.map((product: any) => ({
     ...product,
-    product_name:JSON.parse(product.product_name)[0],
-    product_description: JSON.parse(product.product_description)[0]
+    product_name: JSON.parse(product.product_name)[0],
+    product_description: JSON.parse(product.product_description)[0],
   }));
 
   return (
@@ -78,7 +78,25 @@ const page = async () => {
       </div>
 
       {/* The Product List Goes here */}
-      <ProductList products = {productData} />
+      {/* Product Section Header */}
+      <div className="px-4 lg:px-16 mt-20 lg:mt-32">
+        <div className="flex justify-between items-center mb-6">
+          <div className="">
+            <span className="text-2xl md:text-4xl lg:text-5xl xl:text-6xl">
+              OUR PRODUCTS
+            </span>
+          </div>
+          <div>
+            <a
+              href="#"
+              className="text-sm font-medium underline text-gray-700 hover:text-black"
+            >
+              SEE ALL PRODUCTS
+            </a>
+          </div>
+        </div>
+        <ProductList products={productData} />
+      </div>
     </div>
   );
 };

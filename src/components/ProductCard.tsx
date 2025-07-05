@@ -1,4 +1,5 @@
 "use client";
+import React from "react";
 import Image from "next/image";
 import { PiShoppingCartSimple } from "react-icons/pi";
 export type ProductType = {
@@ -40,7 +41,8 @@ export default function ProductCard({ product }: { product: ProductType }) {
             className="object-cover"
           />
 
-          {/* Overlay container */}
+          {/* Overlay container when modal is not open */}
+
           <div className="absolute inset-0 flex items-end justify-center pointer-events-none">
             <div
               className="w-full bg-black bg-opacity-80 text-white text-sm lg:text-base py-2 text-center
@@ -48,7 +50,9 @@ export default function ProductCard({ product }: { product: ProductType }) {
       transition-all duration-300 pointer-events-auto "
             >
               <div className="flex items-center justify-center">
-                <PiShoppingCartSimple size={30} />
+                <button>
+                  <div className="text-xl tracking-tighter">View Product</div>
+                </button>
               </div>
             </div>
           </div>
