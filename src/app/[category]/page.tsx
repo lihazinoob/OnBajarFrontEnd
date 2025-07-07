@@ -32,6 +32,10 @@ export default function CategoryPage() {
   // state for tracking how many pages in total in there
   const [totalPages, setTotalPages] = useState(1);
 
+  // state for the price ranges
+  const [priceRanges, setPriceRanges] = useState<string[]>([]);
+
+
   const [prouducts, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -69,8 +73,31 @@ export default function CategoryPage() {
     fetchData();
   }, [slug]);
 
+  useEffect(() => {
+    async function fetchPriceRanges() {
+      try {
+        const response = await fetch(
+          `https://raw-node-js.onrender.com/api/fetchPriceRangesofCategory/${slug}`
+        );
+
+        console.log("Response status:", response.status);
+        if (!response.ok) throw new Error("Failed to fetch price ranges");
+  
+        const data = await response.json();
+        const prices: number[] = data.prices;
+        const ranges = dynamicPriceRangeCalculator(prices);
+        setPriceRanges(ranges);
+      } catch (err: any) {
+        console.error("Price range error:", err.message);
+      }
+    }
+  
+    fetchPriceRanges();
+  }, [slug]);
+  
+
   const allProductPrice = prouducts.map((p) => p.product_price);
-  const priceRanges = dynamicPriceRangeCalculator(allProductPrice);
+  const dynamicPriceRanges = dynamicPriceRangeCalculator(allProductPrice);
   // console.log(priceRanges);
 
   return (
@@ -94,7 +121,7 @@ export default function CategoryPage() {
           </div>
 
           {/* Filter DropDown Menu */}
-          {open && <FilterDropDown priceRanges={priceRanges} />}
+          {open && <FilterDropDown priceRanges={dynamicPriceRanges} />}
 
           {error && <p className="text-red-500">{error}</p>}
 
