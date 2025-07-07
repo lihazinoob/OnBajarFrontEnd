@@ -5,6 +5,7 @@ import React, { useEffect, useState } from "react";
 import { FaFilter } from "react-icons/fa";
 import dynamicPriceRangeCalculator from "@/services/dynamicPriceRangeCalculator";
 import { useParams } from "next/navigation";
+import ProductSkeletonList from "@/components/ProductSkeletonList";
 interface Product {
   id: number;
   created_at: string;
@@ -26,6 +27,11 @@ export default function CategoryPage() {
   const rawSlug = params?.category;
   const slug = Array.isArray(rawSlug) ? rawSlug[0] : rawSlug ?? "";
 
+  // state for tracking in which page I am in
+  const [currentPage, setCurrentPage] = useState(1);
+  // state for tracking how many pages in total in there
+  const [totalPages, setTotalPages] = useState(1);
+
   const [prouducts, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -36,7 +42,7 @@ export default function CategoryPage() {
     async function fetchData() {
       try {
         const response = await fetch(
-          `https://raw-node-js.onrender.com/api/fetchProductsByCategory/${slug}`,
+          `https://raw-node-js.onrender.com/api/fetchProductsByCategory/${slug}?page=${currentPage}`,
           {
             cache: "no-store",
           }
@@ -53,6 +59,7 @@ export default function CategoryPage() {
         }));
 
         setProducts(productData);
+        setTotalPages(data.totalPages);
       } catch (err: any) {
         setError(err.message);
       } finally {
@@ -90,7 +97,51 @@ export default function CategoryPage() {
           {open && <FilterDropDown priceRanges={priceRanges} />}
 
           {error && <p className="text-red-500">{error}</p>}
-          {!loading && !error && <ProductList products={prouducts} />}
+
+          {loading ?(<>
+            <ProductSkeletonList count={12}/>
+          </>) : !error && (
+            <>
+              <ProductList products={prouducts} />
+
+              {/* Render the pages here */}
+              <div className="flex justify-center gap-2 mt-10">
+                <button
+                  className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50"
+                  onClick={() =>
+                    setCurrentPage((prev) => Math.max(prev - 1, 1))
+                  }
+                  disabled={currentPage === 1}
+                >
+                  Previous
+                </button>
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                  (page) => (
+                    <button
+                      key={page}
+                      onClick={() => setCurrentPage(page)}
+                      className={`px-3 py-2 rounded ${
+                        currentPage === page
+                          ? "bg-black text-white"
+                          : "bg-gray-100"
+                      }`}
+                    >
+                      {page}
+                    </button>
+                  )
+                )}
+                <button
+                  className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50"
+                  onClick={() =>
+                    setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                  }
+                  disabled={currentPage === totalPages}
+                >
+                  Next
+                </button>
+              </div>
+            </>
+          )}
         </div>
       </div>
     </>
