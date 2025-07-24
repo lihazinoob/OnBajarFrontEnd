@@ -56,11 +56,13 @@ export default function CategoryPage() {
         }
 
         const data = await response.json();
+        console.log(data.products);
         const productData = data.products.map((product: any) => ({
           ...product,
-          product_name: JSON.parse(product.product_name)[0],
-          product_description: JSON.parse(product.product_description)[0],
+          // product_name: product.product_name,
+          // product_description: product.product_description,
         }));
+        console.log("Products data are:",productData);
 
         setProducts(productData);
         setTotalPages(data.totalPages);
