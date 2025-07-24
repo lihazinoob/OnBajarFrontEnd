@@ -80,7 +80,7 @@ export default function CategoryPage() {
           `https://raw-node-js.onrender.com/api/fetchPriceRangesofCategory/${slug}`
         );
 
-        console.log("Response status:", response.status);
+        // console.log("Response status:", response.status);
         if (!response.ok) throw new Error("Failed to fetch price ranges");
   
         const data = await response.json();
