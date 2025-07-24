@@ -24,7 +24,7 @@ export default function ImageSlider({images,name}:{images: string[], name: strin
             <img
               src={img}
               alt={`${name} image ${idx + 1}`}
-              className="h-[500px] w-full object-cover"
+              className="h-[350px] w-full object-cover"
             />
           </div>
         ))}
