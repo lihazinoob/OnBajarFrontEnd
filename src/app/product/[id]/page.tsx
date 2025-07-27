@@ -1,29 +1,71 @@
+"use client";
 import ImageSlider from "@/components/ImageSlider";
 import React from "react";
+import { use } from "react";
 
-async function getProduct(id: string) {
-  const res = await fetch(
-    `https://raw-node-js.onrender.com/api/fetchProductById/${id}`,
-    {
-      cache: "no-store",
-    }
-  );
-  if (!res.ok) throw new Error("Failed to fetch product details");
-  console.log("Product details fetched successfully", res);
-  return res.json();
+interface Product {
+  product_name: string;
+  product_description: string;
+  product_price: number;
+  product_image: string[];
+  product_colors: string[];
 }
 
-export default async function ProductDetailsPage({
+export default function ProductDetailsPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
-  const data = await getProduct(params.id);
-  const product = data.productInformation;
-  // const [selectedImage, setSelectedImage] = React.useState(product.product_image[0]);
+  const { id } = use(params); // Using use to resolve the promise and get the id
+  const [product, setProduct] = React.useState<Product | null>(null);
+  const [selectedImage, setSelectedImage] = React.useState<string>("");
+  const [loading, setLoading] = React.useState<boolean>(true);
 
+  React.useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const res = await fetch(
+          `https://raw-node-js.onrender.com/api/fetchProductById/${id}`,
+          { cache: "no-store" }
+        );
+        if (!res.ok) throw new Error("Failed to fetch product details");
+
+        const data = await res.json();
+        setProduct(data.productInformation);
+        setSelectedImage(data.productInformation.product_image[0]);
+        setLoading(false);
+      } catch (error) {
+        console.error(error);
+        setLoading(false);
+      }
+    };
+
+    fetchProduct();
+  }, [id]);
+
+  // functionality for image selection
+  const selectImage = (e: React.MouseEvent<HTMLImageElement>) => {
+    setSelectedImage(e.currentTarget.src);
+  };
+
+  if (loading) {
+    return (
+      <div className="text-center mt-20 text-gray-600 text-lg">
+        Loading product details...
+      </div>
+    );
+  }
+
+  if (!product) {
+    return (
+      <div className="text-center mt-20 text-red-600 text-lg">
+        Product not found
+      </div>
+    );
+  }
   return (
     <div className="font-lufga mt-8">
+      {/* This portion is for mobile */}
       <div className="md:hidden">
         {/* Product Title and Subtitle Portion */}
         <div className="flex flex-col gap-2 justify-center items-center ">
@@ -84,34 +126,36 @@ export default async function ProductDetailsPage({
         </div>
       </div>
 
-      <div className="hidden md:block">
-        <div className="flex flex-row gap-4 px-8">
-          {/* LEFT:Scrollable Thumbnails */}
-          <div className="flex flex-col overflow-y-auto gap-8 w-20 xl:w-40">
-            {product.product_image.map((image: string, index: number) => (
-              <img
-                key={index}
-                src={image}
-                alt={`Product Image ${index + 1}`}
-                className="w-full h-20 xl:h-40 object-cover rounded cursor-pointer transition-transform duration-300 hover:scale-105"
-              />
-            ))}
-          </div>
+      {/* This portion is for laptop */}
 
-          {/* MIDDLE: Selected Images */}
-          <div className="flex-1">
-            <img
-              src={product.product_image[0]}
-              alt="Selected"
-              className="w-full max-w-md object-contain"
-            />
+      <div className="hidden md:block">
+        <div className="flex flex-row md:px-10 xl:gap-16  md:gap-12  xl:px-32 ">
+          <div className="flex flex-row xl:gap-16 md:gap-8">
+            {/* LEFT:Scrollable Thumbnails */}
+            <div className="flex flex-col gap-4 w-20 xl:w-28 overflow-y-auto max-h-[90vh] pr-1">
+              {product.product_image.map((image: string, index: number) => (
+                <img
+                  key={index}
+                  src={image}
+                  alt={`Product Image ${index + 1}`}
+                  className="w-full h-20 xl:h-28 object-cover rounded-md cursor-pointer transition-transform duration-300 hover:scale-105"
+                  onClick={selectImage}
+                />
+              ))}
+            </div>
+
+            {/* MIDDLE: Selected Images */}
+            <div className="flex-1 xl:w-[820px] md:w-[320px] md:h-[410px] xl:h-[820px]">
+              <img
+                src={selectedImage}
+                alt="Selected"
+                className="w-full h-full object-cover"
+              />
+            </div>
           </div>
 
           {/* Right Section:Product Details */}
-          <div className="w-full max-w-sm space-y-4">
-            asdasdasdasdasdasd
-
-          </div>
+          <div className="w-full max-w-sm space-y-4">asdasdasdasdasdasd</div>
         </div>
       </div>
     </div>

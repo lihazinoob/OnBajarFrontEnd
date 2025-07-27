@@ -33,7 +33,7 @@ export default function BreadCrumbs() {
 
   return (
     <>
-      <div className="md:px-10 px-4 md:py-4 py-2 font-lufga">
+      <div className="md:px-10 xl:px-32 px-4 md:py-4 py-2 font-lufga">
         <div>
           <nav className="flex" aria-label="Breadcrumb">
             <ol className="inline-flex items-center space-x-1 md:space-x-3">
