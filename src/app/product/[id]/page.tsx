@@ -26,6 +26,8 @@ export default function ProductDetailsPage({
   const [selectedImage, setSelectedImage] = React.useState<string>("");
   const [loading, setLoading] = React.useState<boolean>(true);
   const [quantity, setQuantity] = React.useState(1);
+  const [selectedColor, setSelectedColor] = React.useState<string | null>(null);
+  const [selectedSize, setSelectedSize] = React.useState<string | null>(null);
 
   React.useEffect(() => {
     const fetchProduct = async () => {
@@ -69,6 +71,21 @@ export default function ProductDetailsPage({
       </div>
     );
   }
+
+  const handleAddToCart = () => {
+    if (!selectedColor || !selectedSize) {
+      alert("Please select both a color and a size before adding to cart.");
+      return;
+    }
+  };
+
+  const handleBuyNow = () => {
+    if (!selectedColor || !selectedSize) {
+      alert("Please select both a color and a size before buying.");
+      return;
+    }
+  };
+
   return (
     <div className="font-lufga mt-8">
       {/* This portion is for mobile */}
@@ -109,52 +126,73 @@ export default function ProductDetailsPage({
             COLOR
           </div>
           <div className="flex items-center justify-center gap-8 mt-4 text-center">
-            {product.product_colors.map((color: string, i: number) => (
-              <span
-                key={i}
-                style={{
-                  backgroundColor: color,
-                  display: "inline-block",
-                  width: 40,
-                  height: 40,
-                  borderRadius: "50%",
-                  border: "2px solid #666", // <- consistent border for all
-                  // antialiased: "auto", // <- smooth edges
-                }}
-                title={color}
-              />
-            ))}
+            {product.product_colors.map((color: string, i: number) => {
+              const isSelected = selectedColor === color;
+              return (
+                <span
+                  key={i}
+                  onClick={() => setSelectedColor(color)}
+                  style={{
+                    backgroundColor: color,
+                    display: "inline-block",
+                    width: 40,
+                    height: 40,
+                    borderRadius: "50%",
+                    border: isSelected ? "3px solid black" : "2px solid #666",
+                    cursor: "pointer",
+                  }}
+                  title={color}
+                />
+              );
+            })}
           </div>
         </div>
 
         <div className="px-4">
           <hr className="border-t border-gray-300 mb-6" />
         </div>
+
         <div>
           <div className="flex items-center justify-center font-semibold tracking-widest">
             SIZE
           </div>
+          {/* PRODUCT SIZE PORTION */}
           <div className="flex items-center justify-center gap-4 mt-4 text-center">
-            {product.product_size.map((size: string, index: number) => (
-              <span
-                key={index}
-                className="w-10 h-10 flex items-center justify-center border border-gray-100 text-lg font-semibold cursor-pointer rounded-md transition-colors duration-300 hover:bg-gray-200 hover:text-gray-800"
-              >
-                {size}
-              </span>
-            ))}
+            {product.product_size.map((size: string, index: number) => {
+              const isSelected = selectedSize === size;
+              return (
+                <span
+                  key={index}
+                  onClick={() => setSelectedSize(size)}
+                  className={`w-10 h-10 flex items-center justify-center border text-lg font-semibold cursor-pointer rounded-md transition-colors duration-300 ${
+                    isSelected
+                      ? "bg-black text-white border-black"
+                      : "border-gray-100 hover:bg-gray-200 hover:text-gray-800"
+                  }`}
+                >
+                  {size}
+                </span>
+              );
+            })}
           </div>
-          <div className="flex flex-row my-8 px-4 gap-4">
+          <div className="flex flex-row mt-8 mb-4 px-4 gap-4">
             <QuantitySelector
               maxQuantity={product.product_quantity}
               value={quantity}
               onChange={(newQuantity) => setQuantity(newQuantity)}
             />
             <PrimaryActionButton
-                type="addToCart"
-                onAddToCart={() => console.log("Added to cart!")}
-                onBuyNow={() => console.log("Buying now!")}
-              />
+              type="addToCart"
+              onAddToCart={handleAddToCart}
+              onBuyNow={handleBuyNow}
+            />
+          </div>
+          <div className="px-4">
+            <PrimaryActionButton
+              type="buyNow"
+              onAddToCart={handleAddToCart}
+              onBuyNow={handleBuyNow}
+            />
           </div>
         </div>
       </div>
@@ -206,35 +244,47 @@ export default function ProductDetailsPage({
               COLOR
             </div>
             <div className="flex gap-8 text-center pb-6">
-              {product.product_colors.map((color: string, i: number) => (
-                <span
-                  key={i}
-                  style={{
-                    backgroundColor: color,
-                    display: "inline-block",
-                    width: 40,
-                    height: 40,
-                    borderRadius: "50%",
-                    border: "2px solid #666", // <- consistent border for all
-                    // antialiased: "auto", // <- smooth edges
-                  }}
-                  title={color}
-                />
-              ))}
+              {product.product_colors.map((color: string, i: number) => {
+                const isSelected = selectedColor === color;
+                return (
+                  <span
+                    key={i}
+                    onClick={() => setSelectedColor(color)}
+                    style={{
+                      backgroundColor: color,
+                      display: "inline-block",
+                      width: 40,
+                      height: 40,
+                      borderRadius: "50%",
+                      border: isSelected ? "3px solid black" : "2px solid #666",
+                      cursor: "pointer",
+                    }}
+                    title={color}
+                  />
+                );
+              })}
             </div>
             <hr className="border-t border-gray-300 " />
             <div className="font-semibold tracking-widest text-lg pt-6 ">
               SIZE
             </div>
             <div className="flex gap-6 text-center pb-6">
-              {product.product_size.map((size: string, index: number) => (
-                <span
-                  key={index}
-                  className="w-10 h-10 flex items-center justify-center border border-gray-100 text-lg font-semibold rounded-md cursor-pointer transition-colors duration-300 hover:bg-gray-200 hover:text-gray-800"
-                >
-                  {size}
-                </span>
-              ))}
+              {product.product_size.map((size: string, index: number) => {
+                const isSelected = selectedSize === size;
+                return (
+                  <span
+                    key={index}
+                    onClick={() => setSelectedSize(size)}
+                    className={`w-10 h-10 flex items-center justify-center border text-lg font-semibold cursor-pointer rounded-md transition-colors duration-300 ${
+                      isSelected
+                        ? "bg-black text-white border-black"
+                        : "border-gray-100 hover:bg-gray-200 hover:text-gray-800"
+                    }`}
+                  >
+                    {size}
+                  </span>
+                );
+              })}
             </div>
             <div className="mb-4">
               <QuantitySelector
@@ -246,13 +296,13 @@ export default function ProductDetailsPage({
             <div className="flex gap-2">
               <PrimaryActionButton
                 type="addToCart"
-                onAddToCart={() => console.log("Added to cart!")}
-                onBuyNow={() => console.log("Buying now!")}
+                onAddToCart={handleAddToCart}
+                onBuyNow={handleBuyNow}
               />
               <PrimaryActionButton
                 type="buyNow"
-                onAddToCart={() => console.log("Added to cart!")}
-                onBuyNow={() => console.log("Buying now!")}
+                onAddToCart={handleAddToCart}
+                onBuyNow={handleBuyNow}
               />
             </div>
           </div>
