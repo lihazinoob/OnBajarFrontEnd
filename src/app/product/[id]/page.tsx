@@ -3,6 +3,9 @@ import ImageSlider from "@/components/ImageSlider";
 import React from "react";
 import { use } from "react";
 
+import QuantitySelector from "@/components/QuantitySelector";
+import PrimaryActionButton from "@/components/PrimaryActionButton";
+
 interface Product {
   product_name: string;
   product_description: string;
@@ -10,6 +13,7 @@ interface Product {
   product_image: string[];
   product_colors: string[];
   product_size: string[];
+  product_quantity: number;
 }
 
 export default function ProductDetailsPage({
@@ -21,6 +25,7 @@ export default function ProductDetailsPage({
   const [product, setProduct] = React.useState<Product | null>(null);
   const [selectedImage, setSelectedImage] = React.useState<string>("");
   const [loading, setLoading] = React.useState<boolean>(true);
+  const [quantity, setQuantity] = React.useState(1);
 
   React.useEffect(() => {
     const fetchProduct = async () => {
@@ -139,6 +144,18 @@ export default function ProductDetailsPage({
               </span>
             ))}
           </div>
+          <div className="flex flex-row my-8 px-4 gap-4">
+            <QuantitySelector
+              maxQuantity={product.product_quantity}
+              value={quantity}
+              onChange={(newQuantity) => setQuantity(newQuantity)}
+            />
+            <PrimaryActionButton
+                type="addToCart"
+                onAddToCart={() => console.log("Added to cart!")}
+                onBuyNow={() => console.log("Buying now!")}
+              />
+          </div>
         </div>
       </div>
 
@@ -161,7 +178,7 @@ export default function ProductDetailsPage({
             </div>
 
             {/* MIDDLE: Selected Images */}
-            <div className="flex-1 xl:w-[820px] md:w-[320px] md:h-[410px] xl:h-[820px]">
+            <div className="flex-1 2xl:w-[800px]  xl:w-[650px] md:w-[290px] md:h-[410px] xl:h-[820px]">
               <img
                 src={selectedImage}
                 alt="Selected"
@@ -171,7 +188,7 @@ export default function ProductDetailsPage({
           </div>
 
           {/* Right Section:Product Details */}
-          <div className="w-full  space-y-4">
+          <div className="w-full space-y-4">
             <div className="xl:text-4xl md:text-xl font-semibold tracking-wider">
               {product.product_name}
             </div>
@@ -218,6 +235,25 @@ export default function ProductDetailsPage({
                   {size}
                 </span>
               ))}
+            </div>
+            <div className="mb-4">
+              <QuantitySelector
+                maxQuantity={product.product_quantity}
+                value={quantity}
+                onChange={(newQuantity) => setQuantity(newQuantity)}
+              />
+            </div>
+            <div className="flex gap-2">
+              <PrimaryActionButton
+                type="addToCart"
+                onAddToCart={() => console.log("Added to cart!")}
+                onBuyNow={() => console.log("Buying now!")}
+              />
+              <PrimaryActionButton
+                type="buyNow"
+                onAddToCart={() => console.log("Added to cart!")}
+                onBuyNow={() => console.log("Buying now!")}
+              />
             </div>
           </div>
         </div>
