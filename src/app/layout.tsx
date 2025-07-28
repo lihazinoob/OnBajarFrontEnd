@@ -5,7 +5,7 @@ import "./globals.css";
 import TopBar from "@/components/TopBar";
 import { lufga } from "@/utils/fonts";
 import BreadCrumbs from "@/components/BreadCrumbs";
-
+import { CartProvider } from "@/context/CartContext";
 
 export const metadata: Metadata = {
   title: "On Bazar",
@@ -20,9 +20,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={lufga.variable}>
-        <TopBar />
-        <BreadCrumbs/>
-        {children}
+        <CartProvider>
+          <TopBar />
+          <BreadCrumbs />
+          {children}
+        </CartProvider>
       </body>
     </html>
   );

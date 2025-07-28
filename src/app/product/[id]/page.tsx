@@ -5,6 +5,7 @@ import { use } from "react";
 
 import QuantitySelector from "@/components/QuantitySelector";
 import PrimaryActionButton from "@/components/PrimaryActionButton";
+import { useCart } from "@/context/CartContext";
 
 interface Product {
   product_name: string;
@@ -21,6 +22,7 @@ export default function ProductDetailsPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
+  const {addToCart} = useCart();
   const { id } = use(params); // Using use to resolve the promise and get the id
   const [product, setProduct] = React.useState<Product | null>(null);
   const [selectedImage, setSelectedImage] = React.useState<string>("");
@@ -77,6 +79,7 @@ export default function ProductDetailsPage({
       alert("Please select both a color and a size before adding to cart.");
       return;
     }
+    addToCart(quantity);
   };
 
   const handleBuyNow = () => {

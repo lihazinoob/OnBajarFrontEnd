@@ -5,17 +5,19 @@ import Image from "next/image";
 
 import React from "react";
 import Link from "next/link";
+import { useCart } from "@/context/CartContext";
 
 interface Category {
   id: number;
   created_at: string;
   category_name: string;
   category_description: string;
-  slug:string;
+  slug: string;
   category_image: string;
 }
 
 export default function LaptopTopMenuBar() {
+  const { cartCount } = useCart();
   const [categories, setCategories] = React.useState<Category[]>([]);
   React.useEffect(() => {
     const fetchCategoryInfo = async () => {
@@ -47,7 +49,7 @@ export default function LaptopTopMenuBar() {
                       <div className="py-8 grid grid-cols-2 lg:grid-cols-4 lg:gap-8 mx-auto lg:ml-12">
                         {categories.map((category: Category) => (
                           <Link href={`/${category.slug}`} key={category.id}>
-                            <div >
+                            <div>
                               <div className="relative w-40 h-60 xl:w-60">
                                 <Image
                                   src={
@@ -88,6 +90,11 @@ export default function LaptopTopMenuBar() {
               <IoSearchOutline size={25} className="cursor-pointer" />
             </div>
             <PiShoppingCartSimple size={25} />
+            {cartCount > 0 && (
+              <span className="absolute top-[20px] right-[60px] bg-red-500 text-white text-sm rounded-full w-5 h-5 flex items-center justify-center">
+                {cartCount}
+              </span>
+            )}
           </div>
         </div>
       </div>
