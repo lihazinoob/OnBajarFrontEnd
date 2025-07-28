@@ -9,6 +9,7 @@ interface Product {
   product_price: number;
   product_image: string[];
   product_colors: string[];
+  product_size: string[];
 }
 
 export default function ProductDetailsPage({
@@ -122,14 +123,29 @@ export default function ProductDetailsPage({
         </div>
 
         <div className="px-4">
-          <hr className="border-t border-gray-300 mb-12" />
+          <hr className="border-t border-gray-300 mb-6" />
+        </div>
+        <div>
+          <div className="flex items-center justify-center font-semibold tracking-widest">
+            SIZE
+          </div>
+          <div className="flex items-center justify-center gap-4 mt-4 text-center">
+            {product.product_size.map((size: string, index: number) => (
+              <span
+                key={index}
+                className="w-10 h-10 flex items-center justify-center border border-gray-100 text-lg font-semibold cursor-pointer rounded-md transition-colors duration-300 hover:bg-gray-200 hover:text-gray-800"
+              >
+                {size}
+              </span>
+            ))}
+          </div>
         </div>
       </div>
 
       {/* This portion is for laptop */}
 
       <div className="hidden md:block">
-        <div className="flex flex-row md:px-10 xl:gap-16  md:gap-12  xl:px-32 ">
+        <div className="flex flex-row md:px-10 xl:gap-16  md:gap-12 xl:px-32  ">
           <div className="flex flex-row xl:gap-16 md:gap-8">
             {/* LEFT:Scrollable Thumbnails */}
             <div className="flex flex-col gap-4 w-20 xl:w-28 overflow-y-auto max-h-[90vh] pr-1">
@@ -155,7 +171,55 @@ export default function ProductDetailsPage({
           </div>
 
           {/* Right Section:Product Details */}
-          <div className="w-full max-w-sm space-y-4">asdasdasdasdasdasd</div>
+          <div className="w-full  space-y-4">
+            <div className="xl:text-4xl md:text-xl font-semibold tracking-wider">
+              {product.product_name}
+            </div>
+            <div>Review Section</div>
+            <div className="xl:text-xl md:text-md mb-4">
+              {product.product_description}
+            </div>
+
+            <div className="text-3xl font-semibold text-gray-700 pb-8">
+              {product.product_price}.00৳
+            </div>
+
+            <hr className="border-t border-gray-300 " />
+            <div className="font-semibold tracking-widest text-lg pb-4">
+              COLOR
+            </div>
+            <div className="flex gap-8 text-center pb-6">
+              {product.product_colors.map((color: string, i: number) => (
+                <span
+                  key={i}
+                  style={{
+                    backgroundColor: color,
+                    display: "inline-block",
+                    width: 40,
+                    height: 40,
+                    borderRadius: "50%",
+                    border: "2px solid #666", // <- consistent border for all
+                    // antialiased: "auto", // <- smooth edges
+                  }}
+                  title={color}
+                />
+              ))}
+            </div>
+            <hr className="border-t border-gray-300 " />
+            <div className="font-semibold tracking-widest text-lg pt-6 ">
+              SIZE
+            </div>
+            <div className="flex gap-6 text-center pb-6">
+              {product.product_size.map((size: string, index: number) => (
+                <span
+                  key={index}
+                  className="w-10 h-10 flex items-center justify-center border border-gray-100 text-lg font-semibold rounded-md cursor-pointer transition-colors duration-300 hover:bg-gray-200 hover:text-gray-800"
+                >
+                  {size}
+                </span>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </div>
