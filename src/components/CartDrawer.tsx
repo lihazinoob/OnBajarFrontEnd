@@ -7,13 +7,14 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "./ui/drawer";
+import CartItemComponent from "./CartItemComponent";
 
 import { useCart } from "@/context/CartContext";
 
 import { useEffect, useState } from "react";
 
 export default function CartDrawer() {
-  const { cartDrawerOpen, openCartDrawer, closeCartDrawer } = useCart();
+  const { cartDrawerOpen, openCartDrawer, closeCartDrawer,cartItems } = useCart();
 
   return (
     <>
@@ -34,9 +35,11 @@ export default function CartDrawer() {
         </div>
 
         {/* Drawer  content */}
-        <div className="p-4">
-          <p className="text-gray-500">Your cart is empty.</p>
-        </div>
+        {cartItems.length === 0 ? (
+        <div className="p-4 text-sm text-gray-600">Your cart is empty.</div>
+      ) : (
+        cartItems.map((item) => <CartItemComponent key={item.id} item={item} />)
+      )}
       </div>
     </>
   );
