@@ -79,7 +79,15 @@ export default function ProductDetailsPage({
       alert("Please select both a color and a size before adding to cart.");
       return;
     }
-    addToCart(quantity);
+    addToCart({
+      id,
+      name: product.product_name,
+      price: product.product_price,
+      image:product.product_image[0],
+      quantity,
+      color: selectedColor,
+      size: selectedSize,
+    });
     openCartDrawer();
 
   };
