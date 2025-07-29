@@ -6,6 +6,7 @@ import TopBar from "@/components/TopBar";
 import { lufga } from "@/utils/fonts";
 import BreadCrumbs from "@/components/BreadCrumbs";
 import { CartProvider } from "@/context/CartContext";
+import CartDrawer from "@/components/CartDrawer";
 
 export const metadata: Metadata = {
   title: "On Bazar",
@@ -24,6 +25,7 @@ export default function RootLayout({
           <TopBar />
           <BreadCrumbs />
           {children}
+          <CartDrawer/>
         </CartProvider>
       </body>
     </html>

@@ -6,6 +6,7 @@ export default function TopBar() {
     <>
       <div className="lg:hidden">
         <MobileTabTopMenuBar />
+        
       </div>
       <div className="hidden lg:block">
         <LaptopTopMenuBar />

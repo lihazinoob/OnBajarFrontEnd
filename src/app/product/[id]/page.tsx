@@ -22,7 +22,7 @@ export default function ProductDetailsPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const {addToCart} = useCart();
+  const {addToCart,openCartDrawer} = useCart();
   const { id } = use(params); // Using use to resolve the promise and get the id
   const [product, setProduct] = React.useState<Product | null>(null);
   const [selectedImage, setSelectedImage] = React.useState<string>("");
@@ -80,6 +80,8 @@ export default function ProductDetailsPage({
       return;
     }
     addToCart(quantity);
+    openCartDrawer();
+
   };
 
   const handleBuyNow = () => {
