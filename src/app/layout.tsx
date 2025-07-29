@@ -7,6 +7,8 @@ import { lufga } from "@/utils/fonts";
 import BreadCrumbs from "@/components/BreadCrumbs";
 import { CartProvider } from "@/context/CartContext";
 import CartDrawer from "@/components/CartDrawer";
+import CartDrawerWrapper from "@/components/CartDrawerWrapper";
+
 
 export const metadata: Metadata = {
   title: "On Bazar",
@@ -18,6 +20,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  
   return (
     <html lang="en">
       <body className={lufga.variable}>
@@ -26,6 +29,9 @@ export default function RootLayout({
           <BreadCrumbs />
           {children}
           <CartDrawer/>
+
+          {/* black layout */}
+          <CartDrawerWrapper/>
         </CartProvider>
       </body>
     </html>
