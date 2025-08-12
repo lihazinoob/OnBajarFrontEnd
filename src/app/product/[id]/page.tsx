@@ -5,16 +5,37 @@ import { use } from "react";
 
 import QuantitySelector from "@/components/QuantitySelector";
 import PrimaryActionButton from "@/components/PrimaryActionButton";
+import ProductBadges from "@/components/ProductBadges";
+import SizeSelector from "@/components/SizeSelector";
+import ColorSelector from "@/components/ColorSelector";
+import ProductPrice from "@/components/ProductPrice";
+import ProductInfo from "@/components/ProductInfo";
+import StockIndicator from "@/components/StockIndicator";
+import ProductAvailability from "@/components/ProductAvailability";
+import ProductDetailsSkeleton from "@/components/ProductDetailsSkeleton";
+import ProductNotFound from "@/components/ProductNotFound";
 import { useCart } from "@/context/CartContext";
 
+interface ProductSize {
+  size: string;
+  quantity: number;
+}
+
 interface Product {
+  id: number;
+  created_at: string;
   product_name: string;
   product_description: string;
   product_price: number;
-  product_image: string[];
-  product_colors: string[];
-  product_size: string[];
+  product_sale_percentage: number;
+  is_featured_product: boolean;
+  is_new_product: boolean;
   product_quantity: number;
+  product_colors: string[];
+  product_category_id: number;
+  is_sold_out: boolean;
+  product_image: string[];
+  product_size: ProductSize[];
 }
 
 export default function ProductDetailsPage({
@@ -22,200 +43,206 @@ export default function ProductDetailsPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const {addToCart,openCartDrawer} = useCart();
-  const { id } = use(params); // Using use to resolve the promise and get the id
+  const { addToCart, openCartDrawer } = useCart();
+  const { id } = use(params);
   const [product, setProduct] = React.useState<Product | null>(null);
   const [selectedImage, setSelectedImage] = React.useState<string>("");
   const [loading, setLoading] = React.useState<boolean>(true);
+  const [error, setError] = React.useState<string | null>(null);
   const [quantity, setQuantity] = React.useState(1);
   const [selectedColor, setSelectedColor] = React.useState<string | null>(null);
   const [selectedSize, setSelectedSize] = React.useState<string | null>(null);
 
-  React.useEffect(() => {
-    const fetchProduct = async () => {
-      try {
-        const res = await fetch(
-          `https://raw-node-js.onrender.com/api/fetchProductById/${id}`,
-          { cache: "no-store" }
-        );
-        if (!res.ok) throw new Error("Failed to fetch product details");
+  const fetchProduct = React.useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const res = await fetch(
+        `https://raw-node-js.onrender.com/api/fetchProductById/${id}`,
+        { cache: "no-store" }
+      );
+      if (!res.ok) throw new Error("Failed to fetch product details");
 
-        const data = await res.json();
-        setProduct(data.productInformation);
-        setSelectedImage(data.productInformation.product_image[0]);
-        setLoading(false);
-      } catch (error) {
-        console.error(error);
-        setLoading(false);
-      }
-    };
-
-    fetchProduct();
+      const data = await res.json();
+      setProduct(data.productInformation);
+      setSelectedImage(data.productInformation.product_image[0]);
+    } catch (error) {
+      console.error(error);
+      setError(error instanceof Error ? error.message : "Something went wrong");
+    } finally {
+      setLoading(false);
+    }
   }, [id]);
 
-  // functionality for image selection
+  React.useEffect(() => {
+    fetchProduct();
+  }, [fetchProduct]);
+
   const selectImage = (e: React.MouseEvent<HTMLImageElement>) => {
     setSelectedImage(e.currentTarget.src);
   };
 
   if (loading) {
-    return (
-      <div className="text-center mt-20 text-gray-600 text-lg">
-        Loading product details...
-      </div>
-    );
+    return <ProductDetailsSkeleton />;
   }
 
-  if (!product) {
-    return (
-      <div className="text-center mt-20 text-red-600 text-lg">
-        Product not found
-      </div>
-    );
+  if (error || !product) {
+    return <ProductNotFound message={error || "Product not found"} onRetry={fetchProduct} />;
   }
 
   const handleAddToCart = () => {
-    if (!selectedColor || !selectedSize) {
-      alert("Please select both a color and a size before adding to cart.");
+    // Check if color selection is required
+    const hasColors = product.product_colors && product.product_colors.length > 0;
+    
+    if (hasColors && !selectedColor) {
+      alert("Please select a color before adding to cart.");
       return;
     }
+    
+    if (!selectedSize) {
+      alert("Please select a size before adding to cart.");
+      return;
+    }
+
     addToCart({
       id,
       name: product.product_name,
       price: product.product_price,
-      image:product.product_image[0],
+      image: product.product_image[0],
       quantity,
-      color: selectedColor,
+      color: selectedColor || "Default",
       size: selectedSize,
     });
     openCartDrawer();
-
   };
 
   const handleBuyNow = () => {
-    if (!selectedColor || !selectedSize) {
-      alert("Please select both a color and a size before buying.");
+    const hasColors = product.product_colors && product.product_colors.length > 0;
+    
+    if (hasColors && !selectedColor) {
+      alert("Please select a color before buying.");
       return;
     }
+    
+    if (!selectedSize) {
+      alert("Please select a size before buying.");
+      return;
+    }
+    
+    // Add buy now logic here
+    console.log("Buy now clicked");
+  };
+
+  const getMaxQuantityForSize = () => {
+    if (!selectedSize) return 0;
+    const sizeInfo = product.product_size.find(s => s.size === selectedSize);
+    return sizeInfo ? sizeInfo.quantity : 0;
   };
 
   return (
     <div className="font-lufga mt-8">
-      {/* This portion is for mobile */}
+      {/* Mobile Layout */}
       <div className="md:hidden">
-        {/* Product Title and Subtitle Portion */}
-        <div className="flex flex-col gap-2 justify-center items-center ">
-          {/* Product Title */}
-          <div className="text-2xl text-gray-500 font-bold tracking-widest">
-            {product.product_name}
-          </div>
-          {/* Product Subtitle */}
-          <div className="font-extralight text-base text-center max-w-md mx-auto px-8">
-            {product.product_description}
+        {/* Product Header */}
+        <div className="px-6 space-y-4">
+          <ProductInfo 
+            name={product.product_name} 
+            description={product.product_description}
+            className="text-center"
+          />
+          <div className="flex justify-center">
+            <StockIndicator totalQuantity={product.product_quantity} />
           </div>
         </div>
-        {/* Product Image Portion */}
-        <div className="mt-8">
+
+        {/* Product Images with Badges */}
+        <div className="mt-8 relative">
+          <ProductBadges
+            isNewProduct={product.is_new_product}
+            isFeaturedProduct={product.is_featured_product}
+            isSoldOut={product.is_sold_out}
+            salePercentage={product.product_sale_percentage}
+          />
           <ImageSlider
             images={product.product_image}
             name={product.product_name}
           />
         </div>
 
-        {/* <hr className="border-t border-gray-300 mt-12" /> */}
-
-        {/* Product Price Portion */}
-        <div className="text-3xl  font-semibold text-gray-700 px-8 py-4 mt-8">
-          {product.product_price}.00৳
+        {/* Price Section */}
+        <div className="px-6 py-6">
+          <ProductPrice 
+            price={product.product_price}
+            salePercentage={product.product_sale_percentage}
+          />
         </div>
 
         <div className="px-4">
-          <hr className="border-t border-gray-300 " />
+          <hr className="border-t border-gray-300" />
         </div>
 
-        {/* Product Color Portion */}
-        <div className="mt-4 mb-4">
-          <div className="flex items-center justify-center font-semibold tracking-widest">
-            COLOR
+        {/* Color Selection */}
+        {product.product_colors && product.product_colors.length > 0 && (
+          <div className="px-6 py-6">
+            <ColorSelector
+              colors={product.product_colors}
+              selectedColor={selectedColor}
+              onColorSelect={setSelectedColor}
+            />
           </div>
-          <div className="flex items-center justify-center gap-8 mt-4 text-center">
-            {product.product_colors.map((color: string, i: number) => {
-              const isSelected = selectedColor === color;
-              return (
-                <span
-                  key={i}
-                  onClick={() => setSelectedColor(color)}
-                  style={{
-                    backgroundColor: color,
-                    display: "inline-block",
-                    width: 40,
-                    height: 40,
-                    borderRadius: "50%",
-                    border: isSelected ? "3px solid black" : "2px solid #666",
-                    cursor: "pointer",
-                  }}
-                  title={color}
-                />
-              );
-            })}
-          </div>
-        </div>
+        )}
 
         <div className="px-4">
-          <hr className="border-t border-gray-300 mb-6" />
+          <hr className="border-t border-gray-300" />
         </div>
 
-        <div>
-          <div className="flex items-center justify-center font-semibold tracking-widest">
-            SIZE
+        {/* Size Selection */}
+        <div className="px-6 py-6">
+          <SizeSelector
+            sizes={product.product_size}
+            selectedSize={selectedSize}
+            onSizeSelect={setSelectedSize}
+          />
+          <div className="mt-4">
+            <ProductAvailability
+              sizes={product.product_size}
+              selectedSize={selectedSize}
+            />
           </div>
-          {/* PRODUCT SIZE PORTION */}
-          <div className="flex items-center justify-center gap-4 mt-4 text-center">
-            {product.product_size.map((size: string, index: number) => {
-              const isSelected = selectedSize === size;
-              return (
-                <span
-                  key={index}
-                  onClick={() => setSelectedSize(size)}
-                  className={`w-10 h-10 flex items-center justify-center border text-lg font-semibold cursor-pointer rounded-md transition-colors duration-300 ${
-                    isSelected
-                      ? "bg-black text-white border-black"
-                      : "border-gray-100 hover:bg-gray-200 hover:text-gray-800"
-                  }`}
-                >
-                  {size}
-                </span>
-              );
-            })}
-          </div>
-          <div className="flex flex-row mt-8 mb-4 px-4 gap-4">
+        </div>
+
+        {/* Quantity and Action Buttons */}
+        <div className="px-6 space-y-4">
+          <div className="flex gap-4">
             <QuantitySelector
-              maxQuantity={product.product_quantity}
+              maxQuantity={getMaxQuantityForSize()}
               value={quantity}
-              onChange={(newQuantity) => setQuantity(newQuantity)}
+              onChange={setQuantity}
             />
             <PrimaryActionButton
               type="addToCart"
               onAddToCart={handleAddToCart}
               onBuyNow={handleBuyNow}
+              disabled={product.is_sold_out || getMaxQuantityForSize() === 0}
+              className="flex-1"
             />
           </div>
-          <div className="px-4">
-            <PrimaryActionButton
-              type="buyNow"
-              onAddToCart={handleAddToCart}
-              onBuyNow={handleBuyNow}
-            />
-          </div>
+          <PrimaryActionButton
+            type="buyNow"
+            onAddToCart={handleAddToCart}
+            onBuyNow={handleBuyNow}
+            disabled={product.is_sold_out || getMaxQuantityForSize() === 0}
+            className="w-full"
+          />
         </div>
       </div>
 
-      {/* This portion is for laptop */}
-
+      {/* Desktop Layout */}
       <div className="hidden md:block">
-        <div className="flex flex-row md:px-10 xl:gap-16  md:gap-12 xl:px-32  ">
-          <div className="flex flex-row xl:gap-16 md:gap-8">
-            {/* LEFT:Scrollable Thumbnails */}
+        <div className="flex md:px-10 xl:px-32 gap-8 xl:gap-16">
+          {/* Image Section */}
+          <div className="flex gap-8 xl:gap-16">
+            {/* Thumbnail Images */}
             <div className="flex flex-col gap-4 w-20 xl:w-28 overflow-y-auto max-h-[90vh] pr-1">
               {product.product_image.map((image: string, index: number) => (
                 <img
@@ -228,94 +255,84 @@ export default function ProductDetailsPage({
               ))}
             </div>
 
-            {/* MIDDLE: Selected Images */}
-            <div className="flex-1 2xl:w-[800px]  xl:w-[650px] md:w-[290px] md:h-[410px] xl:h-[820px]">
+            {/* Main Image */}
+            <div className="relative flex-1 max-w-[650px] h-[400px] xl:h-[650px]">
+              <ProductBadges
+                isNewProduct={product.is_new_product}
+                isFeaturedProduct={product.is_featured_product}
+                isSoldOut={product.is_sold_out}
+                salePercentage={product.product_sale_percentage}
+              />
               <img
                 src={selectedImage}
-                alt="Selected"
-                className="w-full h-full object-cover"
+                alt="Selected Product"
+                className="w-full h-full object-cover rounded-lg"
               />
             </div>
           </div>
 
-          {/* Right Section:Product Details */}
-          <div className="w-full space-y-4">
-            <div className="xl:text-4xl md:text-xl font-semibold tracking-wider">
-              {product.product_name}
-            </div>
-            <div>Review Section</div>
-            <div className="xl:text-xl md:text-md mb-4">
-              {product.product_description}
-            </div>
+          {/* Product Details Section */}
+          <div className="flex-1 space-y-6">
+            <ProductInfo 
+              name={product.product_name} 
+              description={product.product_description}
+            />
 
-            <div className="text-3xl font-semibold text-gray-700 pb-8">
-              {product.product_price}.00৳
-            </div>
+            <StockIndicator totalQuantity={product.product_quantity} />
 
-            <hr className="border-t border-gray-300 " />
-            <div className="font-semibold tracking-widest text-lg pb-4">
-              COLOR
-            </div>
-            <div className="flex gap-8 text-center pb-6">
-              {product.product_colors.map((color: string, i: number) => {
-                const isSelected = selectedColor === color;
-                return (
-                  <span
-                    key={i}
-                    onClick={() => setSelectedColor(color)}
-                    style={{
-                      backgroundColor: color,
-                      display: "inline-block",
-                      width: 40,
-                      height: 40,
-                      borderRadius: "50%",
-                      border: isSelected ? "3px solid black" : "2px solid #666",
-                      cursor: "pointer",
-                    }}
-                    title={color}
-                  />
-                );
-              })}
-            </div>
-            <hr className="border-t border-gray-300 " />
-            <div className="font-semibold tracking-widest text-lg pt-6 ">
-              SIZE
-            </div>
-            <div className="flex gap-6 text-center pb-6">
-              {product.product_size.map((size: string, index: number) => {
-                const isSelected = selectedSize === size;
-                return (
-                  <span
-                    key={index}
-                    onClick={() => setSelectedSize(size)}
-                    className={`w-10 h-10 flex items-center justify-center border text-lg font-semibold cursor-pointer rounded-md transition-colors duration-300 ${
-                      isSelected
-                        ? "bg-black text-white border-black"
-                        : "border-gray-100 hover:bg-gray-200 hover:text-gray-800"
-                    }`}
-                  >
-                    {size}
-                  </span>
-                );
-              })}
-            </div>
-            <div className="mb-4">
-              <QuantitySelector
-                maxQuantity={product.product_quantity}
-                value={quantity}
-                onChange={(newQuantity) => setQuantity(newQuantity)}
-              />
-            </div>
-            <div className="flex gap-2">
+            <ProductPrice 
+              price={product.product_price}
+              salePercentage={product.product_sale_percentage}
+            />
+
+            <hr className="border-t border-gray-300" />
+
+            {/* Color Selection */}
+            {product.product_colors && product.product_colors.length > 0 && (
+              <>
+                <ColorSelector
+                  colors={product.product_colors}
+                  selectedColor={selectedColor}
+                  onColorSelect={setSelectedColor}
+                />
+                <hr className="border-t border-gray-300" />
+              </>
+            )}
+
+            {/* Size Selection */}
+            <SizeSelector
+              sizes={product.product_size}
+              selectedSize={selectedSize}
+              onSizeSelect={setSelectedSize}
+            />
+
+            <ProductAvailability
+              sizes={product.product_size}
+              selectedSize={selectedSize}
+            />
+
+            {/* Quantity Selector */}
+            <QuantitySelector
+              maxQuantity={getMaxQuantityForSize()}
+              value={quantity}
+              onChange={setQuantity}
+            />
+
+            {/* Action Buttons */}
+            <div className="flex gap-4">
               <PrimaryActionButton
                 type="addToCart"
                 onAddToCart={handleAddToCart}
                 onBuyNow={handleBuyNow}
+                disabled={product.is_sold_out || getMaxQuantityForSize() === 0}
+                className="flex-1"
               />
               <PrimaryActionButton
                 type="buyNow"
                 onAddToCart={handleAddToCart}
                 onBuyNow={handleBuyNow}
+                disabled={product.is_sold_out || getMaxQuantityForSize() === 0}
+                className="flex-1"
               />
             </div>
           </div>
