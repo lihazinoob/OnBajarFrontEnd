@@ -15,24 +15,24 @@ const ProductBadges: React.FC<ProductBadgesProps> = ({
   salePercentage,
 }) => {
   return (
-    <div className="absolute top-4 left-4 flex flex-col gap-2 z-10">
+    <div className="absolute top-4 left-2 flex flex-col gap-2 z-10">
       {isSoldOut && (
-        <div className="bg-red-600 text-white text-xs px-3 py-1 rounded-full font-semibold">
+        <div className="bg-white text-white text-xs px-2 py-1 rounded-lg font-semibold">
           SOLD OUT
         </div>
       )}
       {salePercentage && salePercentage > 0 && (
-        <div className="bg-green-500 text-white text-xs px-3 py-1 rounded-full font-semibold">
+        <div className="bg-white text-black text-xs px-2 py-1 rounded-lg font-semibold">
           -{salePercentage}% OFF
         </div>
       )}
       {isNewProduct && (
-        <div className="bg-blue-600 text-white text-xs px-3 py-1 rounded-full font-semibold">
+        <div className="bg-white text-black text-xs px-2 py-1 rounded-lg font-semibold">
           NEW
         </div>
       )}
       {isFeaturedProduct && (
-        <div className="bg-purple-600 text-white text-xs px-3 py-1 rounded-full font-semibold">
+        <div className="bg-white text-black text-xs px-2 py-1 rounded-lg font-semibold">
           FEATURED
         </div>
       )}

@@ -239,7 +239,7 @@ export default function ProductDetailsPage({
 
       {/* Desktop Layout */}
       <div className="hidden md:block">
-        <div className="flex md:px-10 xl:px-32 gap-8 xl:gap-16">
+        <div className="flex md:px-10 xl:px-32 gap-8 xl:gap-16 mb-8">
           {/* Image Section */}
           <div className="flex gap-8 xl:gap-16">
             {/* Thumbnail Images */}
