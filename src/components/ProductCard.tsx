@@ -2,6 +2,7 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
+import ProductBadges from "./ProductBadges";
 
 export type ProductType = {
   id: number;
@@ -30,11 +31,12 @@ export default function ProductCard({ product }: { product: ProductType }) {
           </div>
         )} */}
           {/* New Badge */}
-          {product.is_new_product && (
-            <div className="absolute top-12 left-2 bg-blue-600 text-white text-xs px-2 py-1 rounded z-10">
-              NEW
-            </div>
-          )}
+          <ProductBadges
+            isNewProduct={product.is_new_product}
+            isFeaturedProduct={false} // Assuming no featured product for now
+            isSoldOut={false} // Assuming no sold out for now
+            salePercentage={product.product_sale_percentage}
+          />
 
           {/* Image */}
           <div className="relative w-full h-60 lg:h-80 overflow-hidden">
