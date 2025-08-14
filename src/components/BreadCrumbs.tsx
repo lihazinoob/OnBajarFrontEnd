@@ -4,6 +4,29 @@ import { usePathname } from "next/navigation";
 
 export default function BreadCrumbs() {
   const pathname = usePathname();
+  
+  // If we're on the home page, only show "Home"
+  if (pathname === "/") {
+    return (
+      <>
+        <div className="md:px-10 xl:px-32 px-4 md:py-4 py-2 font-lufga">
+          <div>
+            <nav className="flex" aria-label="Breadcrumb">
+              <ol className="inline-flex items-center space-x-1 md:space-x-3">
+                <li className="inline-flex items-center cursor-pointer">
+                  <span className="text-gray-500 font-medium">
+                    
+                  </span>
+                </li>
+              </ol>
+            </nav>
+          </div>
+        </div>
+      </>
+    );
+  }
+
+  // For other routes, show full breadcrumb trail
   // split breaks the path wenever we see a forward slash "/"
   // filter removes any empty segments from the array
   const pathSegments = pathname.split("/").filter((segment) => segment);
@@ -40,8 +63,8 @@ export default function BreadCrumbs() {
               {breadcrumbs.map((breadcrumb, index) => (
                 <li key={breadcrumb.path} className="inline-flex items-center cursor-pointer">
                   {index > 0 && <span className="mx-2 text-gray-400">/</span>}
-                  {index === breadcrumbs.length - 1 ? (
-                    // Last item (current page)
+                  {breadcrumb.path === pathname ? (
+                    // Current page (non-clickable)
                     <span className="text-gray-500 font-medium">
                       {breadcrumb.label}
                     </span>
